@@ -1,0 +1,24 @@
+<mxfile host="app.diagrams.net" modified="2026-11-26T00:00:00.000Z" agent="Devin" version="24.0.0" type="device">
+  <diagram id="task2-context" name="C4 Context To Be">
+    <mxGraphModel dx="1000" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="650" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="client" value="B2B-клиент&lt;br&gt;получает персональный прайс-лист" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7e6;strokeColor=#9a6b19;" vertex="1" parent="1"><mxGeometry x="60" y="90" width="210" height="95" as="geometry"/></mxCell>
+        <mxCell id="employee" value="Сотрудник магазина&lt;br&gt;управляет клиентами, ценами и ассортиментом" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7e6;strokeColor=#9a6b19;" vertex="1" parent="1"><mxGeometry x="60" y="270" width="210" height="95" as="geometry"/></mxCell>
+        <mxCell id="system" value="Online Store System&lt;br&gt;микросервисная система; включает stateless price-list exporter, запускаемый Kubernetes CronJob ежедневно в 06:00" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf4e4;strokeColor=#3d7a38;fontStyle=1" vertex="1" parent="1"><mxGeometry x="390" y="165" width="320" height="170" as="geometry"/></mxCell>
+        <mxCell id="db" value="PostgreSQL&lt;br&gt;products, categories, clients, client_prices" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f9ff;strokeColor=#2f5f98;" vertex="1" parent="1"><mxGeometry x="820" y="70" width="220" height="85" as="geometry"/></mxCell>
+        <mxCell id="storage" value="Object Storage&lt;br&gt;хранилище CSV/XLSX прайс-листов" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f9ff;strokeColor=#2f5f98;" vertex="1" parent="1"><mxGeometry x="820" y="230" width="220" height="85" as="geometry"/></mxCell>
+        <mxCell id="monitoring" value="Monitoring / Logs&lt;br&gt;метрики, логи, alerts о failed/late Job" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f9ff;strokeColor=#2f5f98;" vertex="1" parent="1"><mxGeometry x="820" y="390" width="220" height="85" as="geometry"/></mxCell>
+        <mxCell id="delivery" value="Notification / Delivery Service&lt;br&gt;публикация ссылки, email/SFTP/API-доставка" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f9ff;strokeColor=#2f5f98;" vertex="1" parent="1"><mxGeometry x="390" y="430" width="320" height="95" as="geometry"/></mxCell>
+        <mxCell id="e1" value="скачивает / получает файл" style="endArrow=block;html=1;rounded=1;strokeColor=#4a5568;" edge="1" parent="1" source="client" target="system"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="управляет данными" style="endArrow=block;html=1;rounded=1;strokeColor=#4a5568;" edge="1" parent="1" source="employee" target="system"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="читает SQL" style="endArrow=block;html=1;rounded=1;strokeColor=#4a5568;" edge="1" parent="1" source="system" target="db"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="публикует CSV/XLSX" style="endArrow=block;html=1;rounded=1;strokeColor=#4a5568;" edge="1" parent="1" source="system" target="storage"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" value="stdout / metrics" style="endArrow=block;html=1;rounded=1;strokeColor=#4a5568;" edge="1" parent="1" source="system" target="monitoring"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" value="регистрирует файл" style="endArrow=block;html=1;rounded=1;strokeColor=#4a5568;" edge="1" parent="1" source="system" target="delivery"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" value="доставляет ссылку/файл" style="endArrow=block;html=1;rounded=1;strokeColor=#4a5568;" edge="1" parent="1" source="delivery" target="client"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

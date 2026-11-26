@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: logistics-export
+data:
+  001-init.sql: |
+    CREATE TABLE IF NOT EXISTS shipments (
+      shipment_id BIGSERIAL PRIMARY KEY,
+      client_id BIGINT NOT NULL,
+      driver_id BIGINT NOT NULL,
+      vehicle_id BIGINT NOT NULL,
+      origin_city TEXT NOT NULL,
+      destination_city TEXT NOT NULL,
+      status TEXT NOT NULL,
+      shipped_at TIMESTAMPTZ NOT NULL,
+      delivered_at TIMESTAMPTZ
+    );
+
+    INSERT INTO shipments (client_id, driver_id, vehicle_id, origin_city, destination_city, status, shipped_at, delivered_at)
+    VALUES
+      (101, 11, 21, 'Minsk', 'Brest', 'delivered', '2026-01-10T08:00:00Z', '2026-01-10T18:00:00Z'),
+      (102, 12, 22, 'Minsk', 'Gomel', 'in_transit', '2026-01-11T09:00:00Z', NULL),
+      (103, 13, 23, 'Brest', 'Vitebsk', 'delivered', '2026-01-11T10:00:00Z', '2026-01-12T08:30:00Z'),
+      (104, 14, 24, 'Grodno', 'Minsk', 'planned', '2026-01-12T11:00:00Z', NULL),
+      (105, 15, 25, 'Mogilev', 'Minsk', 'delivered', '2026-01-12T12:00:00Z', '2026-01-12T20:00:00Z')
+    ON CONFLICT DO NOTHING;

@@ -1,0 +1,17 @@
+$ cat output/customer_delivery_report_large.json
+{
+  "mode": "large",
+  "source_rows": 8,
+  "rows_by_status": {
+    "delivered": 4,
+    "failed": 1,
+    "in_transit": 2,
+    "pending": 1
+  },
+  "generated_at": "2026-11-26T13:20:46Z"
+}
+$ ls output/quarantine
+total 8
+drwxr-xr-x  3 mikhail.khorsun  staff   96 Nov 26 16:21 .
+drwxr-xr-x  4 mikhail.khorsun  staff  128 Nov 26 16:21 ..
+-rw-r--r--  1 mikhail.khorsun  staff  157 Nov 26 16:21 delivery_statuses.csv

@@ -1,0 +1,119 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Task1 Airflow POC evidence</title>
+<style>body{font-family:-apple-system,Arial,sans-serif;margin:32px;background:#f7f9fc;color:#17202a}h1{font-size:26px}h2{font-size:18px;margin-bottom:8px;color:#25547a}pre{white-space:pre-wrap;background:#111827;color:#d1fae5;padding:16px;border-radius:10px;font-size:11px;line-height:1.35}section{margin-bottom:28px}</style></head><body>
+<h1>Task 1 — локальный запуск Apache Airflow POC</h1>
+<p>Evidence сформирован из реальных команд локального Docker Compose окружения. Проверены success-ветка, fallback/quarantine-ветка, output-файл и email-уведомления в Mailpit.</p>
+<section><h2>Локально развёрнутые контейнеры</h2><pre>$ docker compose ps
+NAME                     STATUS                   PORTS
+msa5-airflow-scheduler   Up 7 minutes             8080/tcp
+msa5-airflow-webserver   Up 7 minutes (healthy)   0.0.0.0:8080-&gt;8080/tcp, [::]:8080-&gt;8080/tcp
+msa5-mailpit             Up 7 minutes (healthy)   0.0.0.0:1025-&gt;1025/tcp, [::]:1025-&gt;1025/tcp, 0.0.0.0:8025-&gt;8025/tcp, [::]:8025-&gt;8025/tcp
+</pre></section><section><h2>DAG runs</h2><pre>$ airflow dags list-runs -d customer_delivery_report_batch
+[{&quot;dag_id&quot;: &quot;customer_delivery_report_batch&quot;, &quot;run_id&quot;: &quot;manual__2026-11-26T13:21:00+00:00&quot;, &quot;state&quot;: &quot;success&quot;, &quot;execution_date&quot;: &quot;2026-11-26T13:21:00+00:00&quot;, &quot;start_date&quot;: &quot;2026-11-26T13:21:02.001680+00:00&quot;, &quot;end_date&quot;: &quot;2026-11-26T13:21:08.588440+00:00&quot;}, {&quot;dag_id&quot;: &quot;customer_delivery_report_batch&quot;, &quot;run_id&quot;: &quot;manual__2026-11-26T13:20:38+00:00&quot;, &quot;state&quot;: &quot;success&quot;, &quot;execution_date&quot;: &quot;2026-11-26T13:20:38+00:00&quot;, &quot;start_date&quot;: &quot;2026-11-26T13:20:39.442868+00:00&quot;, &quot;end_date&quot;: &quot;2026-11-26T13:20:48.870102+00:00&quot;}]
+</pre></section><section><h2>Успешная ветка: состояния задач</h2><pre>$ airflow tasks states-for-dag-run customer_delivery_report_batch manual__2026-11-26T13:20:38+00:00
+dag_id                         | execution_date            | task_id                | state   | start_date                       | end_date                        
+===============================+===========================+========================+=========+==================================+=================================
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | start                  | success | 2026-11-26T13:20:39.460623+00:00 | 2026-11-26T13:20:39.460625+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | read_source            | success | 2026-11-26T13:20:40.847698+00:00 | 2026-11-26T13:20:40.916241+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | branch_on_data_quality | success | 2026-11-26T13:20:42.248723+00:00 | 2026-11-26T13:20:42.379617+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | analyze_data           | success | 2026-11-26T13:20:43.758298+00:00 | 2026-11-26T13:20:43.874739+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | branch_on_volume       | success | 2026-11-26T13:20:45.195803+00:00 | 2026-11-26T13:20:45.323022+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | process_large_batch    | success | 2026-11-26T13:20:46.615529+00:00 | 2026-11-26T13:20:46.673971+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | process_small_batch    | skipped | 2026-11-26T13:20:45.256025+00:00 | 2026-11-26T13:20:45.256025+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | quarantine_source      | skipped | 2026-11-26T13:20:42.306302+00:00 | 2026-11-26T13:20:42.306302+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | join                   | success | 2026-11-26T13:20:46.983585+00:00 | 2026-11-26T13:20:46.983586+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | notify_success         | success | 2026-11-26T13:20:48.488463+00:00 | 2026-11-26T13:20:48.554499+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | notify_failure         | skipped | 2026-11-26T13:20:42.400086+00:00 | 2026-11-26T13:20:42.400086+00:00
+                                                                                                                                                                   
+</pre></section><section><h2>Fallback-ветка: состояния задач</h2><pre>$ airflow tasks states-for-dag-run customer_delivery_report_batch manual__2026-11-26T13:21:00+00:00
+dag_id                         | execution_date            | task_id                | state   | start_date                       | end_date                        
+===============================+===========================+========================+=========+==================================+=================================
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | start                  | success | 2026-11-26T13:21:02.014633+00:00 | 2026-11-26T13:21:02.014636+00:00
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | read_source            | success | 2026-11-26T13:21:03.187376+00:00 | 2026-11-26T13:21:03.308428+00:00
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | branch_on_data_quality | success | 2026-11-26T13:21:04.672940+00:00 | 2026-11-26T13:21:04.801423+00:00
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | analyze_data           | skipped | 2026-11-26T13:21:04.732275+00:00 | 2026-11-26T13:21:04.732275+00:00
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | branch_on_volume       | skipped | 2026-11-26T13:21:04.823447+00:00 | 2026-11-26T13:21:04.823447+00:00
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | process_large_batch    | skipped | 2026-11-26T13:21:05.041104+00:00 | 2026-11-26T13:21:05.041104+00:00
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | process_small_batch    | skipped | 2026-11-26T13:21:05.041193+00:00 | 2026-11-26T13:21:05.041193+00:00
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | quarantine_source      | success | 2026-11-26T13:21:06.197147+00:00 | 2026-11-26T13:21:06.339805+00:00
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | join                   | skipped | 2026-11-26T13:21:06.664031+00:00 | 2026-11-26T13:21:06.664031+00:00
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | notify_success         | skipped | 2026-11-26T13:21:08.325641+00:00 | 2026-11-26T13:21:08.325641+00:00
+customer_delivery_report_batch | 2026-11-26T13:21:00+00:00 | notify_failure         | success | 2026-11-26T13:21:07.817643+00:00 | 2026-11-26T13:21:07.938748+00:00
+                                                                                                                                                                   
+</pre></section><section><h2>Выходные файлы и карантин</h2><pre>$ cat output/customer_delivery_report_large.json
+{
+  &quot;mode&quot;: &quot;large&quot;,
+  &quot;source_rows&quot;: 8,
+  &quot;rows_by_status&quot;: {
+    &quot;delivered&quot;: 4,
+    &quot;failed&quot;: 1,
+    &quot;in_transit&quot;: 2,
+    &quot;pending&quot;: 1
+  },
+  &quot;generated_at&quot;: &quot;2026-11-26T13:20:46Z&quot;
+}
+$ ls output/quarantine
+total 8
+drwxr-xr-x  3 mikhail.khorsun  staff   96 Nov 26 16:21 .
+drwxr-xr-x  4 mikhail.khorsun  staff  128 Nov 26 16:21 ..
+-rw-r--r--  1 mikhail.khorsun  staff  157 Nov 26 16:21 delivery_statuses.csv
+</pre></section><section><h2>Email-уведомления в Mailpit</h2><pre>$ curl http://localhost:8025/api/v1/messages
+{
+    &quot;total&quot;: 2,
+    &quot;unread&quot;: 2,
+    &quot;count&quot;: 2,
+    &quot;messages_count&quot;: 2,
+    &quot;start&quot;: 0,
+    &quot;tags&quot;: [],
+    &quot;messages&quot;: [
+        {
+            &quot;ID&quot;: &quot;VGLFGLehfvs4FTU3Xm7U3K&quot;,
+            &quot;MessageID&quot;: &quot;35ANpFbWf5uYGz87zgN46F@mailpit&quot;,
+            &quot;Read&quot;: false,
+            &quot;From&quot;: {
+                &quot;Name&quot;: &quot;&quot;,
+                &quot;Address&quot;: &quot;airflow@example.local&quot;
+            },
+            &quot;To&quot;: [
+                {
+                    &quot;Name&quot;: &quot;&quot;,
+                    &quot;Address&quot;: &quot;marketing-analytics@example.local&quot;
+                }
+            ],
+            &quot;Cc&quot;: [],
+            &quot;Bcc&quot;: [],
+            &quot;ReplyTo&quot;: [],
+            &quot;Subject&quot;: &quot;[Airflow POC] customer_delivery_report_batch requires attention&quot;,
+            &quot;Created&quot;: &quot;2026-11-26T13:21:07.935Z&quot;,
+            &quot;Tags&quot;: [],
+            &quot;Size&quot;: 1143,
+            &quot;Attachments&quot;: 0,
+            &quot;Snippet&quot;: &quot;\u041f\u0430\u0439\u043f\u043b\u0430\u0439\u043d \u0437\u0430\u0432\u0435\u0440\u0448\u0438\u043b\u0441\u044f \u043f\u043e fallback-\u0432\u0435\u0442\u043a\u0435 \u0412\u0445\u043e\u0434\u043d\u043e\u0439 \u0444\u0430\u0439\u043b \u043f\u043e\u043c\u0435\u0449\u0451\u043d \u0432 \u043a\u0430\u0440\u0430\u043d\u0442\u0438\u043d. \u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u0443 CSV, \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u043f\u043e\u043b\u044f ...&quot;
+        },
+        {
+            &quot;ID&quot;: &quot;YJgqx93SsKeMjDBmQwHAk7&quot;,
+            &quot;MessageID&quot;: &quot;9tGnGgNL9exfv2bafm7jqE@mailpit&quot;,
+            &quot;Read&quot;: false,
+            &quot;From&quot;: {
+                &quot;Name&quot;: &quot;&quot;,
+                &quot;Address&quot;: &quot;airflow@example.local&quot;
+            },
+            &quot;To&quot;: [
+                {
+                    &quot;Name&quot;: &quot;&quot;,
+                    &quot;Address&quot;: &quot;marketing-analytics@example.local&quot;
+                }
+            ],
+            &quot;Cc&quot;: [],
+            &quot;Bcc&quot;: [],
+            &quot;ReplyTo&quot;: [],
+            &quot;Subject&quot;: &quot;[Airflow POC] customer_delivery_report_batch succeeded&quot;,
+            &quot;Created&quot;: &quot;2026-11-26T13:20:48.549Z&quot;,
+            &quot;Tags&quot;: [],
+            &quot;Size&quot;: 1098,
+            &quot;Attachments&quot;: 0,
+            &quot;Snippet&quot;: &quot;\u041f\u0430\u0439\u043f\u043b\u0430\u0439\u043d \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u0437\u0430\u0432\u0435\u0440\u0448\u0451\u043d \u041e\u0442\u0447\u0451\u0442 \u043f\u043e \u0441\u0442\u0430\u0442\u0443\u0441\u0430\u043c \u0434\u043e\u0441\u0442\u0430\u0432\u043a\u0438 \u0441\u0444\u043e\u0440\u043c\u0438\u0440\u043e\u0432\u0430\u043d. \u0414\u0435\u0442\u0430\u043b\u0438 \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u044b \u0432 task instance logs \u0438 \u0432 \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0435 ou...&quot;
+        }
+    ]
+}
+</pre></section>
+</body></html>

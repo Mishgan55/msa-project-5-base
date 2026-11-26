@@ -1,0 +1,15 @@
+$ airflow tasks states-for-dag-run customer_delivery_report_batch manual__2026-11-26T13:20:38+00:00
+dag_id                         | execution_date            | task_id                | state   | start_date                       | end_date                        
+===============================+===========================+========================+=========+==================================+=================================
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | start                  | success | 2026-11-26T13:20:39.460623+00:00 | 2026-11-26T13:20:39.460625+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | read_source            | success | 2026-11-26T13:20:40.847698+00:00 | 2026-11-26T13:20:40.916241+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | branch_on_data_quality | success | 2026-11-26T13:20:42.248723+00:00 | 2026-11-26T13:20:42.379617+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | analyze_data           | success | 2026-11-26T13:20:43.758298+00:00 | 2026-11-26T13:20:43.874739+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | branch_on_volume       | success | 2026-11-26T13:20:45.195803+00:00 | 2026-11-26T13:20:45.323022+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | process_large_batch    | success | 2026-11-26T13:20:46.615529+00:00 | 2026-11-26T13:20:46.673971+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | process_small_batch    | skipped | 2026-11-26T13:20:45.256025+00:00 | 2026-11-26T13:20:45.256025+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | quarantine_source      | skipped | 2026-11-26T13:20:42.306302+00:00 | 2026-11-26T13:20:42.306302+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | join                   | success | 2026-11-26T13:20:46.983585+00:00 | 2026-11-26T13:20:46.983586+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | notify_success         | success | 2026-11-26T13:20:48.488463+00:00 | 2026-11-26T13:20:48.554499+00:00
+customer_delivery_report_batch | 2026-11-26T13:20:38+00:00 | notify_failure         | skipped | 2026-11-26T13:20:42.400086+00:00 | 2026-11-26T13:20:42.400086+00:00
+                                                                                                                                                                   

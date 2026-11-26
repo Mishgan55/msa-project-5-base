@@ -1,0 +1,59 @@
+$ curl http://localhost:8025/api/v1/messages
+{
+    "total": 2,
+    "unread": 2,
+    "count": 2,
+    "messages_count": 2,
+    "start": 0,
+    "tags": [],
+    "messages": [
+        {
+            "ID": "VGLFGLehfvs4FTU3Xm7U3K",
+            "MessageID": "35ANpFbWf5uYGz87zgN46F@mailpit",
+            "Read": false,
+            "From": {
+                "Name": "",
+                "Address": "airflow@example.local"
+            },
+            "To": [
+                {
+                    "Name": "",
+                    "Address": "marketing-analytics@example.local"
+                }
+            ],
+            "Cc": [],
+            "Bcc": [],
+            "ReplyTo": [],
+            "Subject": "[Airflow POC] customer_delivery_report_batch requires attention",
+            "Created": "2026-11-26T13:21:07.935Z",
+            "Tags": [],
+            "Size": 1143,
+            "Attachments": 0,
+            "Snippet": "\u041f\u0430\u0439\u043f\u043b\u0430\u0439\u043d \u0437\u0430\u0432\u0435\u0440\u0448\u0438\u043b\u0441\u044f \u043f\u043e fallback-\u0432\u0435\u0442\u043a\u0435 \u0412\u0445\u043e\u0434\u043d\u043e\u0439 \u0444\u0430\u0439\u043b \u043f\u043e\u043c\u0435\u0449\u0451\u043d \u0432 \u043a\u0430\u0440\u0430\u043d\u0442\u0438\u043d. \u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u0443 CSV, \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u043f\u043e\u043b\u044f ..."
+        },
+        {
+            "ID": "YJgqx93SsKeMjDBmQwHAk7",
+            "MessageID": "9tGnGgNL9exfv2bafm7jqE@mailpit",
+            "Read": false,
+            "From": {
+                "Name": "",
+                "Address": "airflow@example.local"
+            },
+            "To": [
+                {
+                    "Name": "",
+                    "Address": "marketing-analytics@example.local"
+                }
+            ],
+            "Cc": [],
+            "Bcc": [],
+            "ReplyTo": [],
+            "Subject": "[Airflow POC] customer_delivery_report_batch succeeded",
+            "Created": "2026-11-26T13:20:48.549Z",
+            "Tags": [],
+            "Size": 1098,
+            "Attachments": 0,
+            "Snippet": "\u041f\u0430\u0439\u043f\u043b\u0430\u0439\u043d \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u0437\u0430\u0432\u0435\u0440\u0448\u0451\u043d \u041e\u0442\u0447\u0451\u0442 \u043f\u043e \u0441\u0442\u0430\u0442\u0443\u0441\u0430\u043c \u0434\u043e\u0441\u0442\u0430\u0432\u043a\u0438 \u0441\u0444\u043e\u0440\u043c\u0438\u0440\u043e\u0432\u0430\u043d. \u0414\u0435\u0442\u0430\u043b\u0438 \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u044b \u0432 task instance logs \u0438 \u0432 \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0435 ou..."
+        }
+    ]
+}

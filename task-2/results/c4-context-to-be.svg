@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="650" viewBox="0 0 1100 650">
+  <style>
+    .box{fill:#f5f9ff;stroke:#2f5f98;stroke-width:2;rx:10}
+    .system{fill:#eaf4e4;stroke:#3d7a38;stroke-width:2}
+    .external{fill:#fff7e6;stroke:#9a6b19;stroke-width:2}
+    .text{font-family:Arial,sans-serif;font-size:15px;fill:#1d2733}
+    .title{font-family:Arial,sans-serif;font-size:22px;font-weight:bold;fill:#1d2733}
+    .small{font-family:Arial,sans-serif;font-size:12px;fill:#4a5568}
+    .arrow{stroke:#4a5568;stroke-width:2;fill:none;marker-end:url(#arrow)}
+    .label{font-family:Arial,sans-serif;font-size:12px;fill:#4a5568}
+  </style>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#4a5568"/></marker></defs>
+  <text x="30" y="35" class="title">C4 Context — генерация B2B-прайс-листов To Be</text>
+
+  <rect x="60" y="90" width="210" height="95" class="box external"/>
+  <text x="165" y="122" text-anchor="middle" class="text">B2B-клиент</text>
+  <text x="165" y="145" text-anchor="middle" class="small">получает актуальный</text>
+  <text x="165" y="162" text-anchor="middle" class="small">персональный прайс-лист</text>
+
+  <rect x="60" y="270" width="210" height="95" class="box external"/>
+  <text x="165" y="302" text-anchor="middle" class="text">Сотрудник магазина</text>
+  <text x="165" y="325" text-anchor="middle" class="small">настраивает клиентов,</text>
+  <text x="165" y="342" text-anchor="middle" class="small">цены и ассортимент</text>
+
+  <rect x="390" y="165" width="320" height="170" class="box system"/>
+  <text x="550" y="198" text-anchor="middle" class="text">Online Store System</text>
+  <text x="550" y="222" text-anchor="middle" class="small">микросервисная система интернет-магазина</text>
+  <text x="550" y="248" text-anchor="middle" class="small">включает exporter, запускаемый Kubernetes CronJob</text>
+  <text x="550" y="274" text-anchor="middle" class="small">и формирующий CSV/XLSX из PostgreSQL</text>
+  <text x="550" y="300" text-anchor="middle" class="small">без изменения онлайн-трафика пользователей</text>
+
+  <rect x="820" y="70" width="220" height="85" class="box external"/>
+  <text x="930" y="103" text-anchor="middle" class="text">PostgreSQL</text>
+  <text x="930" y="126" text-anchor="middle" class="small">products, categories,</text>
+  <text x="930" y="143" text-anchor="middle" class="small">clients, client_prices</text>
+
+  <rect x="820" y="230" width="220" height="85" class="box external"/>
+  <text x="930" y="263" text-anchor="middle" class="text">Object Storage</text>
+  <text x="930" y="286" text-anchor="middle" class="small">S3/GCS/внутреннее файловое</text>
+  <text x="930" y="303" text-anchor="middle" class="small">хранилище прайс-листов</text>
+
+  <rect x="820" y="390" width="220" height="85" class="box external"/>
+  <text x="930" y="423" text-anchor="middle" class="text">Monitoring / Logs</text>
+  <text x="930" y="446" text-anchor="middle" class="small">метрики, логи, alerts</text>
+  <text x="930" y="463" text-anchor="middle" class="small">о failed/late Job</text>
+
+  <rect x="390" y="430" width="320" height="95" class="box external"/>
+  <text x="550" y="463" text-anchor="middle" class="text">Notification / Delivery Service</text>
+  <text x="550" y="486" text-anchor="middle" class="small">публикация ссылки, email/SFTP/API-доставка</text>
+  <text x="550" y="503" text-anchor="middle" class="small">или интеграция с клиентским порталом</text>
+
+  <path d="M270 135 C330 135 330 210 390 210" class="arrow"/>
+  <text x="300" y="150" class="label">скачивает / получает файл</text>
+  <path d="M270 320 C330 320 330 285 390 285" class="arrow"/>
+  <text x="292" y="330" class="label">управляет ассортиментом и ценами</text>
+  <path d="M710 205 C760 180 770 145 820 120" class="arrow"/>
+  <text x="737" y="150" class="label">читает данные SQL</text>
+  <path d="M710 255 C760 255 770 270 820 270" class="arrow"/>
+  <text x="740" y="248" class="label">записывает CSV/XLSX</text>
+  <path d="M710 320 C770 350 770 410 820 430" class="arrow"/>
+  <text x="734" y="385" class="label">stdout / metrics</text>
+  <path d="M550 335 L550 430" class="arrow"/>
+  <text x="560" y="382" class="label">регистрирует готовый файл</text>
+  <path d="M390 465 C300 450 250 250 225 185" class="arrow"/>
+  <text x="245" y="425" class="label">доставляет ссылку/файл</text>
+
+  <text x="30" y="610" class="small">Принцип: ежедневный Kubernetes CronJob запускает stateless exporter в 06:00; результат публикуется в объектном хранилище, события и ошибки наблюдаются в централизованном мониторинге.</text>
+</svg>

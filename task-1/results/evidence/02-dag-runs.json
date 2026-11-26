@@ -1,0 +1,2 @@
+$ airflow dags list-runs -d customer_delivery_report_batch
+[{"dag_id": "customer_delivery_report_batch", "run_id": "manual__2026-11-26T13:21:00+00:00", "state": "success", "execution_date": "2026-11-26T13:21:00+00:00", "start_date": "2026-11-26T13:21:02.001680+00:00", "end_date": "2026-11-26T13:21:08.588440+00:00"}, {"dag_id": "customer_delivery_report_batch", "run_id": "manual__2026-11-26T13:20:38+00:00", "state": "success", "execution_date": "2026-11-26T13:20:38+00:00", "start_date": "2026-11-26T13:20:39.442868+00:00", "end_date": "2026-11-26T13:20:48.870102+00:00"}]
