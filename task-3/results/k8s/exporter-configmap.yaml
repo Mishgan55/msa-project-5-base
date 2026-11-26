@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shipment-exporter-config
+  namespace: logistics-export
+data:
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_NAME: logistics
+  EXPORT_TABLE: shipments
+  EXPORT_DIR: /exports
+  DB_CONNECT_TIMEOUT: "10"

@@ -1,0 +1,29 @@
+<mxfile host="app.diagrams.net" modified="2026-11-26T00:00:00.000Z" agent="Devin" version="24.0.0" type="device">
+  <diagram id="task4-c4" name="C4 Spring Batch Architecture">
+    <mxGraphModel dx="1200" dy="760" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="780" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="boundary" value="TradeWare system boundary — переходная архитектура рядом с монолитом" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#8092a8;dashed=1;verticalAlign=top;fontSize=12" vertex="1" parent="1"><mxGeometry x="35" y="70" width="1210" height="655" as="geometry"/></mxCell>
+        <mxCell id="user" value="Сотрудник склада&lt;br&gt;загружает CSV и смотрит статус" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7e6;strokeColor=#9a6b19" vertex="1" parent="1"><mxGeometry x="70" y="130" width="190" height="100" as="geometry"/></mxCell>
+        <mxCell id="erp" value="ERP Monolith UI/API&lt;br&gt;Java 11 / WildFly&lt;br&gt;принимает файл, сохраняет raw, регистрирует ingestion job" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf4e4;strokeColor=#3d7a38;fontStyle=1" vertex="1" parent="1"><mxGeometry x="330" y="115" width="250" height="115" as="geometry"/></mxCell>
+        <mxCell id="queue" value="Job Dispatcher / Queue&lt;br&gt;таблица ingestion_job или Pub/Sub / очередь сообщений" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf4e4;strokeColor=#3d7a38" vertex="1" parent="1"><mxGeometry x="330" y="330" width="250" height="115" as="geometry"/></mxCell>
+        <mxCell id="worker" value="Inventory Batch Worker&lt;br&gt;Spring Batch, horizontally scaled&lt;br&gt;validate → enrich → stage → merge → finalize&lt;br&gt;retry / skip / restart / quarantine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf4e4;strokeColor=#3d7a38;fontStyle=1" vertex="1" parent="1"><mxGeometry x="670" y="115" width="280" height="145" as="geometry"/></mxCell>
+        <mxCell id="gcs" value="Google Cloud Storage&lt;br&gt;raw/, quarantine/, processed/ CSV" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6edff;strokeColor=#7048a8" vertex="1" parent="1"><mxGeometry x="1020" y="105" width="180" height="90" as="geometry"/></mxCell>
+        <mxCell id="pg" value="PostgreSQL&lt;br&gt;inventory + staging + reference data&lt;br&gt;Spring Batch Job Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f9ff;strokeColor=#2f5f98" vertex="1" parent="1"><mxGeometry x="1020" y="260" width="180" height="120" as="geometry"/></mxCell>
+        <mxCell id="audit" value="Job Status / Error Audit&lt;br&gt;статусы, строки, причины ошибок, ссылки на quarantine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f9ff;strokeColor=#2f5f98" vertex="1" parent="1"><mxGeometry x="670" y="360" width="280" height="95" as="geometry"/></mxCell>
+        <mxCell id="notify" value="Notification Service&lt;br&gt;UI/email/webhook уведомления" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf4e4;strokeColor=#3d7a38" vertex="1" parent="1"><mxGeometry x="330" y="535" width="250" height="95" as="geometry"/></mxCell>
+        <mxCell id="obs" value="Monitoring / Logging&lt;br&gt;Prometheus/Grafana + centralized logs&lt;br&gt;alerts on failed/late/backlog" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6edff;strokeColor=#7048a8" vertex="1" parent="1"><mxGeometry x="700" y="535" width="250" height="95" as="geometry"/></mxCell>
+        <mxCell id="e1" value="upload/status" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="user" target="erp"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="registers job" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="erp" target="queue"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="claim job" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="queue" target="worker"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="read/write files" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="worker" target="gcs"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" value="batch write / merge" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="worker" target="pg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" value="status + errors" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="worker" target="audit"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" value="completion event" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="audit" target="notify"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" value="notify result" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="notify" target="user"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" value="metrics/logs" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="worker" target="obs"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

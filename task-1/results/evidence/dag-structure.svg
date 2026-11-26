@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+  <style>
+    .task{fill:#eef6ff;stroke:#2f5f98;stroke-width:2;rx:9}
+    .branch{fill:#fff7e6;stroke:#9a6b19;stroke-width:2;rx:9}
+    .fallback{fill:#fff0f0;stroke:#a33;stroke-width:2;rx:9}
+    .success{fill:#eaf4e4;stroke:#3d7a38;stroke-width:2;rx:9}
+    .txt{font-family:Arial,sans-serif;font-size:14px;fill:#17202a}
+    .small{font-family:Arial,sans-serif;font-size:11px;fill:#4a5568}
+    .arrow{stroke:#4a5568;stroke-width:2;fill:none;marker-end:url(#arrow)}
+  </style>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#4a5568"/></marker></defs>
+  <text x="30" y="35" style="font-family:Arial;font-size:22px;font-weight:bold">Airflow DAG — customer_delivery_report_batch</text>
+
+  <rect x="40" y="220" width="90" height="55" class="task"/><text x="85" y="252" text-anchor="middle" class="txt">start</text>
+  <rect x="175" y="210" width="130" height="75" class="task"/><text x="240" y="242" text-anchor="middle" class="txt">read_source</text><text x="240" y="262" text-anchor="middle" class="small">retries=2</text>
+  <rect x="350" y="195" width="165" height="105" class="branch"/><text x="432" y="237" text-anchor="middle" class="txt">branch_on_data_quality</text><text x="432" y="260" text-anchor="middle" class="small">required columns / empty values</text>
+
+  <rect x="570" y="95" width="140" height="75" class="task"/><text x="640" y="127" text-anchor="middle" class="txt">analyze_data</text><text x="640" y="147" text-anchor="middle" class="small">status aggregation</text>
+  <rect x="770" y="95" width="145" height="75" class="branch"/><text x="842" y="127" text-anchor="middle" class="txt">branch_on_volume</text><text x="842" y="147" text-anchor="middle" class="small">rows &gt; threshold?</text>
+  <rect x="980" y="55" width="155" height="65" class="success"/><text x="1057" y="82" text-anchor="middle" class="txt">process_large_batch</text><text x="1057" y="102" text-anchor="middle" class="small">chosen in success demo</text>
+  <rect x="980" y="140" width="155" height="65" class="task"/><text x="1057" y="167" text-anchor="middle" class="txt">process_small_batch</text><text x="1057" y="187" text-anchor="middle" class="small">alternative branch</text>
+
+  <rect x="570" y="335" width="155" height="75" class="fallback"/><text x="647" y="367" text-anchor="middle" class="txt">quarantine_source</text><text x="647" y="387" text-anchor="middle" class="small">fallback for invalid CSV</text>
+  <rect x="790" y="335" width="145" height="75" class="fallback"/><text x="862" y="367" text-anchor="middle" class="txt">notify_failure</text><text x="862" y="387" text-anchor="middle" class="small">EmailOperator</text>
+
+  <rect x="790" y="230" width="145" height="60" class="task"/><text x="862" y="257" text-anchor="middle" class="txt">join</text><text x="862" y="275" text-anchor="middle" class="small">none_failed_min_one_success</text>
+  <rect x="980" y="230" width="155" height="60" class="success"/><text x="1057" y="257" text-anchor="middle" class="txt">notify_success</text><text x="1057" y="277" text-anchor="middle" class="small">EmailOperator</text>
+
+  <path d="M130 247 L175 247" class="arrow"/>
+  <path d="M305 247 L350 247" class="arrow"/>
+  <path d="M515 220 C545 180 545 135 570 132" class="arrow"/>
+  <path d="M515 275 C545 320 545 370 570 372" class="arrow"/>
+  <path d="M710 132 L770 132" class="arrow"/>
+  <path d="M915 112 C950 95 950 88 980 88" class="arrow"/>
+  <path d="M915 152 C950 170 950 172 980 172" class="arrow"/>
+  <path d="M1057 120 C1057 170 935 190 935 245" class="arrow"/>
+  <path d="M1057 205 C1057 220 950 225 935 245" class="arrow"/>
+  <path d="M935 260 L980 260" class="arrow"/>
+  <path d="M725 372 L790 372" class="arrow"/>
+
+  <text x="40" y="480" class="small">Ветвление качества: valid → analyze_data; invalid → quarantine_source. Ветвление объёма: rows_total &gt; POC_ROW_THRESHOLD → large batch, иначе small batch.</text>
+</svg>

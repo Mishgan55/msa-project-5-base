@@ -1,0 +1,69 @@
+$ kubectl get cronjob,job,pod,pvc -n logistics-export
+NAME                              SCHEDULE     TIMEZONE        SUSPEND   ACTIVE   LAST SCHEDULE   AGE    CONTAINERS   IMAGES                    SELECTOR
+cronjob.batch/shipment-exporter   0 20 * * *   Europe/Moscow   False     0        <none>          2m2s   exporter     shipment-exporter:local   <none>
+
+NAME                                                STATUS     COMPLETIONS   DURATION   AGE   CONTAINERS   IMAGES                    SELECTOR
+job.batch/shipment-exporter-manual-20261126163707   Complete   1/1           3s         95s   exporter     shipment-exporter:local   batch.kubernetes.io/controller-uid=74e8d432-81e4-4726-86be-d6a9a9ba812f
+
+NAME                                                READY   STATUS      RESTARTS   AGE    IP            NODE       NOMINATED NODE   READINESS GATES
+pod/export-viewer                                   1/1     Running     0          33s    10.244.0.12   minikube   <none>           <none>
+pod/postgres-b4cc7f4-qj758                          1/1     Running     0          2m2s   10.244.0.10   minikube   <none>           <none>
+pod/shipment-exporter-manual-20261126163707-g5jdd   0/1     Completed   0          95s    10.244.0.11   minikube   <none>           <none>
+
+NAME                                      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE    VOLUMEMODE
+persistentvolumeclaim/analytics-exports   Bound    pvc-78b8e33c-1078-412c-8e4f-54c2ea86f300   1Gi        RWO            standard       <unset>                 2m2s   Filesystem
+
+$ kubectl describe cronjob shipment-exporter -n logistics-export
+Name:                          shipment-exporter
+Namespace:                     logistics-export
+Labels:                        app.kubernetes.io/name=shipment-exporter
+Annotations:                   <none>
+Schedule:                      0 20 * * *
+Concurrency Policy:            Forbid
+Suspend:                       False
+Time Zone:                     Europe/Moscow
+Successful Job History Limit:  3
+Failed Job History Limit:      5
+Starting Deadline Seconds:     300s
+Selector:                      <unset>
+Parallelism:                   <unset>
+Completions:                   <unset>
+Active Deadline Seconds:       1800s
+Pod Template:
+  Labels:  app.kubernetes.io/name=shipment-exporter
+  Containers:
+   exporter:
+    Image:      shipment-exporter:local
+    Port:       <none>
+    Host Port:  <none>
+    Limits:
+      cpu:     500m
+      memory:  512Mi
+    Requests:
+      cpu:     100m
+      memory:  128Mi
+    Environment Variables from:
+      shipment-exporter-config  ConfigMap  Optional: false
+    Environment:
+      DB_USER:      <set to the key 'DB_USER' in secret 'shipment-exporter-auth'>      Optional: false
+      DB_PASSWORD:  <set to the key 'DB_PASSWORD' in secret 'shipment-exporter-auth'>  Optional: false
+    Mounts:
+      /exports from exports (rw)
+      /tmp from tmp (rw)
+  Volumes:
+   exports:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  analytics-exports
+    ReadOnly:   false
+   tmp:
+    Type:            EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:          
+    SizeLimit:       <unset>
+  Node-Selectors:    <none>
+  Tolerations:       <none>
+Last Schedule Time:  <unset>
+Active Jobs:         <none>
+Events:
+  Type     Reason         Age                From                Message
+  ----     ------         ----               ----                -------
+  Warning  UnexpectedJob  92s (x3 over 95s)  cronjob-controller  Saw a job that the controller did not create or forgot: shipment-exporter-manual-20261126163707

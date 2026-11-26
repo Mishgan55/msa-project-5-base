@@ -1,0 +1,5 @@
+$ docker compose ps
+NAME                     STATUS                   PORTS
+msa5-airflow-scheduler   Up 7 minutes             8080/tcp
+msa5-airflow-webserver   Up 7 minutes (healthy)   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+msa5-mailpit             Up 7 minutes (healthy)   0.0.0.0:1025->1025/tcp, [::]:1025->1025/tcp, 0.0.0.0:8025->8025/tcp, [::]:8025->8025/tcp

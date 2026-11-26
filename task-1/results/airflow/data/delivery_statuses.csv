@@ -1,0 +1,9 @@
+order_id,customer_id,delivery_status,updated_at
+1001,501,delivered,2026-01-10T09:10:00Z
+1002,502,in_transit,2026-01-10T09:20:00Z
+1003,503,delivered,2026-01-10T09:25:00Z
+1004,504,failed,2026-01-10T09:40:00Z
+1005,505,delivered,2026-01-10T10:00:00Z
+1006,506,in_transit,2026-01-10T10:15:00Z
+1007,507,pending,2026-01-10T10:30:00Z
+1008,508,delivered,2026-01-10T10:45:00Z

@@ -1,0 +1,36 @@
+<mxfile host="app.diagrams.net" modified="2026-11-26T00:00:00.000Z" agent="Devin" version="24.0.0" type="device">
+  <diagram id="task5-c4" name="C4 Observability Architecture">
+    <mxGraphModel dx="1300" dy="840" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="860" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="boundary" value="TradeWare target architecture" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#8092a8;dashed=1;verticalAlign=top;fontSize=12" vertex="1" parent="1"><mxGeometry x="35" y="70" width="1330" height="735" as="geometry"/></mxCell>
+        <mxCell id="user" value="Сотрудник склада&lt;br&gt;загружает CSV и получает статус" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7e6;strokeColor=#9a6b19" vertex="1" parent="1"><mxGeometry x="70" y="130" width="180" height="95" as="geometry"/></mxCell>
+        <mxCell id="erp" value="ERP Monolith UI/API&lt;br&gt;Java 11 / WildFly&lt;br&gt;accept file + register job&lt;br&gt;trace_id / job_id propagation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf4e4;strokeColor=#3d7a38" vertex="1" parent="1"><mxGeometry x="320" y="115" width="240" height="115" as="geometry"/></mxCell>
+        <mxCell id="worker" value="Inventory Batch Worker&lt;br&gt;Spring Batch, horizontally scaled&lt;br&gt;validate → enrich → stage → merge → finalize&lt;br&gt;Micrometer /actuator/prometheus&lt;br&gt;structured JSON logs to stdout" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf4e4;strokeColor=#3d7a38;fontStyle=1" vertex="1" parent="1"><mxGeometry x="640" y="105" width="290" height="140" as="geometry"/></mxCell>
+        <mxCell id="pg" value="PostgreSQL&lt;br&gt;inventory + staging&lt;br&gt;job repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f9ff;strokeColor=#2f5f98" vertex="1" parent="1"><mxGeometry x="1010" y="100" width="180" height="90" as="geometry"/></mxCell>
+        <mxCell id="gcs" value="GCS&lt;br&gt;raw / processed / quarantine files" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f9ff;strokeColor=#2f5f98" vertex="1" parent="1"><mxGeometry x="1010" y="235" width="180" height="85" as="geometry"/></mxCell>
+        <mxCell id="queue" value="Job Dispatcher / Queue&lt;br&gt;ingestion_job table or Pub/Sub" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf4e4;strokeColor=#3d7a38" vertex="1" parent="1"><mxGeometry x="330" y="330" width="230" height="90" as="geometry"/></mxCell>
+        <mxCell id="notify" value="Notification Service&lt;br&gt;UI/email/webhook status&lt;br&gt;success / failure / quarantine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf4e4;strokeColor=#3d7a38" vertex="1" parent="1"><mxGeometry x="640" y="340" width="290" height="90" as="geometry"/></mxCell>
+        <mxCell id="prom" value="Prometheus&lt;br&gt;scrapes /actuator/prometheus,&lt;br&gt;Kubernetes, postgres exporter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6edff;strokeColor=#7048a8;fontStyle=1" vertex="1" parent="1"><mxGeometry x="70" y="520" width="270" height="115" as="geometry"/></mxCell>
+        <mxCell id="alert" value="Alertmanager&lt;br&gt;deduplication, routing,&lt;br&gt;email/Slack/incident channel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6edff;strokeColor=#7048a8" vertex="1" parent="1"><mxGeometry x="390" y="520" width="230" height="115" as="geometry"/></mxCell>
+        <mxCell id="grafana" value="Grafana&lt;br&gt;operations overview, SLA, backlog,&lt;br&gt;data quality, DB/JVM/Kubernetes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6edff;strokeColor=#7048a8" vertex="1" parent="1"><mxGeometry x="680" y="520" width="230" height="115" as="geometry"/></mxCell>
+        <mxCell id="fluent" value="Fluent Bit&lt;br&gt;collects stdout logs,&lt;br&gt;enriches pod metadata,&lt;br&gt;buffers and retries" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6edff;strokeColor=#7048a8" vertex="1" parent="1"><mxGeometry x="970" y="520" width="180" height="115" as="geometry"/></mxCell>
+        <mxCell id="elastic" value="Elasticsearch&lt;br&gt;indexed JSON logs&lt;br&gt;retention / ILM&lt;br&gt;search by job_id" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6edff;strokeColor=#7048a8" vertex="1" parent="1"><mxGeometry x="1190" y="520" width="150" height="115" as="geometry"/></mxCell>
+        <mxCell id="kibana" value="Kibana&lt;br&gt;incident investigation, filtering,&lt;br&gt;error-code and trace analysis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6edff;strokeColor=#7048a8" vertex="1" parent="1"><mxGeometry x="1060" y="700" width="240" height="75" as="geometry"/></mxCell>
+        <mxCell id="e1" value="upload/status" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="user" target="erp"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="async job" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="erp" target="worker"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="batch write/merge" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="worker" target="pg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="read/write CSV" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="worker" target="gcs"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" value="status event" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="queue" target="notify"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" value="notify user" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="notify" target="user"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" value="metrics scrape" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="worker" target="prom"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" value="alerts" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="prom" target="alert"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" value="alert state" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="alert" target="grafana"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" value="stdout JSON" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="worker" target="fluent"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e11" value="ship logs" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="fluent" target="elastic"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" value="search" style="endArrow=block;html=1;rounded=1" edge="1" parent="1" source="elastic" target="kibana"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

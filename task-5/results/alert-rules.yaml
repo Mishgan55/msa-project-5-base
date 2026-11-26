@@ -1,0 +1,93 @@
+groups:
+  - name: tradeware-batch
+    interval: 30s
+    rules:
+      - alert: BatchJobFailed
+        expr: increase(ingestion_files_processed_total{status="FAILED"}[5m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+          team: warehouse-platform
+        annotations:
+          summary: "Batch ingestion job failed"
+          description: "At least one ingestion job failed during the last 5 minutes. Inspect Kibana by job_id and error_code."
+
+      - alert: BatchBacklogGrowing
+        expr: ingestion_pending_jobs > 100
+        for: 10m
+        labels:
+          severity: warning
+          team: warehouse-platform
+        annotations:
+          summary: "Ingestion backlog is growing"
+          description: "More than 100 pending ingestion jobs for 10 minutes. Scale workers or inspect downstream dependencies."
+
+      - alert: OldestJobWaitingTooLong
+        expr: ingestion_oldest_pending_job_age_seconds > 300
+        for: 5m
+        labels:
+          severity: critical
+          team: warehouse-platform
+        annotations:
+          summary: "Oldest ingestion job waits longer than 5 minutes"
+          description: "The oldest pending job exceeded the expected queue wait time."
+
+      - alert: SmallFileSlaBreached
+        expr: histogram_quantile(0.95, sum(rate(ingestion_job_duration_seconds_bucket{file_size_class="small"}[15m])) by (le)) > 30
+        for: 15m
+        labels:
+          severity: critical
+          team: warehouse-platform
+        annotations:
+          summary: "SLA breached for files up to 2000 rows"
+          description: "p95 processing duration for small files is above 30 seconds for 15 minutes."
+
+      - alert: HighInvalidRowsRatio
+        expr: sum(rate(ingestion_rows_invalid_total[15m])) / sum(rate(ingestion_rows_processed_total[15m])) > 0.05
+        for: 15m
+        labels:
+          severity: warning
+          team: warehouse-platform
+        annotations:
+          summary: "Invalid rows ratio is above 5 percent"
+          description: "Check data quality dashboard, validation error codes and quarantine files."
+
+      - alert: QuarantineGrowing
+        expr: increase(ingestion_quarantine_files_total[15m]) > 3
+        for: 0m
+        labels:
+          severity: warning
+          team: warehouse-platform
+        annotations:
+          summary: "Quarantine file count is growing"
+          description: "More than 3 files were moved to quarantine within 15 minutes."
+
+      - alert: DbPoolSaturation
+        expr: hikaricp_connections_pending > 0 or hikaricp_connections_active / hikaricp_connections_max > 0.8
+        for: 5m
+        labels:
+          severity: critical
+          team: warehouse-platform
+        annotations:
+          summary: "Database connection pool is saturated"
+          description: "Workers are waiting for PostgreSQL connections or using more than 80 percent of the pool."
+
+      - alert: WorkerRestarting
+        expr: increase(kube_pod_container_status_restarts_total{container=~".*batch.*"}[10m]) > 1
+        for: 0m
+        labels:
+          severity: warning
+          team: warehouse-platform
+        annotations:
+          summary: "Batch worker is restarting"
+          description: "Check OOMKilled events, JVM memory, GC and recent deployments."
+
+      - alert: NoSuccessfulIngestion
+        expr: increase(ingestion_files_processed_total{status="SUCCEEDED"}[30m]) == 0 and ingestion_pending_jobs > 0
+        for: 5m
+        labels:
+          severity: critical
+          team: warehouse-platform
+        annotations:
+          summary: "No successful ingestion despite pending jobs"
+          description: "Jobs exist, but no successful ingestion completion was observed for 30 minutes."

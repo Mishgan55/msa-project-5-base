@@ -1,0 +1,11 @@
+$ kubectl exec export-viewer -- ls -l /exports
+total 4
+-rw-r--r--    1 10001    10001          463 Nov 26 13:38 shipments_20261126T133816Z.csv
+
+$ kubectl exec export-viewer -- cat /exports/shipments_20261126T133816Z.csv
+shipment_id,client_id,driver_id,vehicle_id,origin_city,destination_city,status,shipped_at,delivered_at
+1,101,11,21,Minsk,Brest,delivered,2026-01-10 08:00:00+00,2026-01-10 18:00:00+00
+2,102,12,22,Minsk,Gomel,in_transit,2026-01-11 09:00:00+00,
+3,103,13,23,Brest,Vitebsk,delivered,2026-01-11 10:00:00+00,2026-01-12 08:30:00+00
+4,104,14,24,Grodno,Minsk,planned,2026-01-12 11:00:00+00,
+5,105,15,25,Mogilev,Minsk,delivered,2026-01-12 12:00:00+00,2026-01-12 20:00:00+00
